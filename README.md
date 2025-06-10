@@ -9,10 +9,10 @@ As with any BepInEx Mod:
 4. Done
 
 ## Customization
-You can customize the mod in the ingame console which you can open by pressing `Shift + ~ ` 
+You can customize the mod in the ingame console which you can open by pressing `Shift + ~` 
 or `Shift + Fn + Esc` if you're on a keyboard that doesn't have a tilde key.
 
-Then in the Console there you can use the `is` command and follow the subcommands.
+Then in the console you can use the `is` command and follow the subcommands.
 
 You can also customize the mod directly in the config file which is located in the `BepInEx/config` directory
 
@@ -24,7 +24,7 @@ Anything set via the `format` subcommands can have the following variables
 `{best_level_time}`: Best level time, requires level timer saving to be enabled\
 `{ascent_rate}`: Current ascent rate\
 `{game_time}`: Current time in seconds since start of game\
-`{clock}`: Just a clock\
+`{clock}`: A clock displaying the time\
 `{left_stamina}`: Stamina of your left Hand\
 `{right_stamina}`: Stamina of your right Hand
 
