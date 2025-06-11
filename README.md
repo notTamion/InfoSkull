@@ -27,12 +27,15 @@ Anything set via the `format` subcommands can have the following variables
 `{ascent_rate}`: ascent rate\
 `{game_time}`: time in seconds since start of run\
 `{clock}`: clock displaying the time\
-`{left_stamina}`: stamina of your left Hand\
-`{right_stamina}`: stamina of your right Hand\
-`{mass_height}`: mass height\
-`{mass_speed}`: mass speed\
+`{left_stamina}`: stamina of your left Hand. LEADERBOARD ILLEGAL\
+`{right_stamina}`: stamina of your right Hand. LEADERBOARD ILLEGAL\
+`{mass_height}`: mass height. LEADERBOARD ILLEGAL\
+`{mass_speed}`: mass speed. LEADERBOARD ILLEGAL\
 `{mass_acc_mult}`: mass acceleration multiplier\
-`{mass_distance}`: distance from mass to player
+`{mass_distance}`: distance from mass to player. LEADERBOARD ILLEGAL\
+`{score}`: score \
+`{high_score}`: high score\
+`{ascent}`: highest height reached in this run
 
 [//]: # (VARIABLES_DESCRIPTIONS_END)
 

@@ -45,6 +45,7 @@ public class Commands {
 			case "format":
 				Plugin.LevelTimer.format.Value = string.Join(" ", args.Skip(1).ToArray()).Replace("\\n", "\n");
 				sendMessage("Updated format");
+				Plugin.checkLeaderboardLegality();
 				break;
 			case "onlybest":
 				Plugin.LevelTimer.onlyBest.Value = !Plugin.LevelTimer.onlyBest.Value;
@@ -76,6 +77,7 @@ public class Commands {
 			case "format":
 				Plugin.Display.format.Value = string.Join(" ", args.Skip(1).ToArray()).Replace("\\n", "\n");
 				sendMessage("Updated format");
+				Plugin.checkLeaderboardLegality();
 				break;
 			default:
 				sendMessage("""
@@ -104,7 +106,8 @@ public class Commands {
 	}
 #endif
 
-	static void sendMessage(string message) {
+	public static void sendMessage(string message) {
+		if (!console) return;
 		var methodInfo = console.GetType()
 			.GetMethod("AddMessageToHistory", BindingFlags.NonPublic | BindingFlags.Instance);
 		methodInfo.Invoke(console, new object[] { message });
