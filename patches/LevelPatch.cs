@@ -7,10 +7,11 @@ public class LevelPatch {
 	[HarmonyPatch("OnExit")]
 	[HarmonyPostfix]
 	public static void prefixOnExit(M_Level __instance) {
-		var new_level = WorldLoader.GetClosestLevelToPosition(ENT_Player.GetPlayer().transform.position).level;
+		var new_level = WorldLoader.GetClosestLevelToPosition(ENT_Player.playerObject.transform.position).level;
 		if (new_level.HasEntered()) return;
 
 		if (__instance.levelName.Equals("M1_Intro_01")) {
+			Formatter.levelOverride = __instance;
 			TriggerZonePatch.time_on_close = __instance;
 			return;
 		}

@@ -19,14 +19,22 @@ You can also customize the mod directly in the config file which is located in t
 ## Formats
 Anything set via the `format` subcommands can have the following variables
 
-`{level}`: Current level name\
-`{level_time}`: Current level time\
+[//]: # (VARIABLES_DESCRIPTIONS_START)
+`{level}`: level name\
+`{level_time}`: level time\
+`{height}`: player height\
 `{best_level_time}`: Best level time, requires level timer saving to be enabled\
-`{ascent_rate}`: Current ascent rate\
-`{game_time}`: Current time in seconds since start of game\
-`{clock}`: A clock displaying the time\
-`{left_stamina}`: Stamina of your left Hand\
-`{right_stamina}`: Stamina of your right Hand
+`{ascent_rate}`: ascent rate\
+`{game_time}`: time in seconds since start of run\
+`{clock}`: clock displaying the time\
+`{left_stamina}`: stamina of your left Hand\
+`{right_stamina}`: stamina of your right Hand\
+`{mass_height}`: mass height\
+`{mass_speed}`: mass speed\
+`{mass_acc_mult}`: mass acceleration multiplier\
+`{mass_distance}`: distance from mass to player
+
+[//]: # (VARIABLES_DESCRIPTIONS_END)
 
 Example: `is display format {left_stamina} | {clock} | {right_stamina}`
 

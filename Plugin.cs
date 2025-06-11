@@ -54,6 +54,9 @@ public class Plugin : BaseUnityPlugin {
 	GameObject display;
 	void callbacks() {
 		SceneManager.sceneLoaded += (scene, mode) => {
+			if (scene.name == "Game-Main") {
+				CL_GameManager.gamemode.allowLeaderboardScoring = false;
+			}
 			GameObject highScore = GameObject.Find("High Score");
 			if (!highScore) {
 				return;

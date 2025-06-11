@@ -15,6 +15,7 @@ public class TriggerZonePatch {
 
 		Plugin.logger.LogInfo("Changed level: " + time_on_close.levelName + " - " + new_level.levelName);
 		Timer.completeRoom(time_on_close);
+		Formatter.levelOverride = null;
 		time_on_close = null;
 	}
 }

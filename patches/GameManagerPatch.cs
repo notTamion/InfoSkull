@@ -14,5 +14,6 @@ public class GameManagerPatch {
 	[HarmonyPostfix]
 	public static void postfixConstructor(CL_GameManager __instance) {
 		Timer.levelEnterTime = __instance.GetGameTime();
+		Formatter.levelOverride = null;
 	}
 }

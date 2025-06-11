@@ -15,7 +15,6 @@ public class Timer {
 				StatManager.Statistic.ModType.Min);
 		}
 
-		Formatter.levelOverride = level;
 		string format = Plugin.LevelTimer.format.Value;
 		if ((currentLevelTime() < bestLevelTime(level) || !Plugin.LevelTimer.onlyBest.Value) && format != "") {
 			CL_UIManager.instance.highscoreHeader.ShowText(Formatter.format(format));
