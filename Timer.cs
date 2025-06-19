@@ -17,7 +17,7 @@ public class Timer {
 
 		string format = Plugin.LevelTimer.format.Value;
 		if ((currentLevelTime() < bestLevelTime(level) || !Plugin.LevelTimer.onlyBest.Value) && format != "") {
-			CL_UIManager.instance.highscoreHeader.ShowText(Formatter.format(format));
+			Plugin.levelTimer.GetComponent<UT_TextScrawl>().ShowText(Formatter.format(format));
 		} 
 
 		levelEnterTime = CL_GameManager.gMan.GetGameTime();

@@ -4,7 +4,7 @@
         <TargetFramework>net471</TargetFramework>
         <AssemblyName>InfoSkull</AssemblyName>
         <Product>Projects more info right into your skull</Product>
-        <Version>0.2.0</Version>
+        <Version>1.0.1</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <RestoreAdditionalProjectSources>
@@ -52,8 +52,23 @@
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\White Knuckle_Data\Managed\UnityEngine.dll</HintPath>
         <Aliases>unityengineold</Aliases>
       </Reference>
+      <Reference Include="UnityEngine.InputLegacyModule">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\White Knuckle_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      </Reference>
+      <Reference Include="UnityEngine.InputModule">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\White Knuckle_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+      </Reference>
       <Reference Include="UnityEngine.UI">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\White Knuckle_Data\Managed\UnityEngine.UI.dll</HintPath>
       </Reference>
+      <Reference Include="UnityEngine.UIModule">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\White Knuckle_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      </Reference>
     </ItemGroup>
+    
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy /Y /D &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\BepInEx\plugins&quot;" />
+        <Exec Command="python ./tools/update_readme_constants.py" />
+        <Exec Command="xcopy /Y /D &quot;README.md&quot; &quot;thunderstore&quot;" />
+    </Target>
 </Project>
