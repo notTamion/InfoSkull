@@ -103,6 +103,11 @@ public class Plugin : BaseUnityPlugin {
 				foreach (var ui in UI_POS) {
 					var gameObject = GameObject.Find(ui);
 					var rectTransform = gameObject.GetComponent<RectTransform>();
+					if (ui == "Ascent Header") {
+						rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+						rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+						rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, Screen.height + rectTransform.anchoredPosition.y);
+					}
 					var config = Config.Bind(ui, "position", rectTransform.anchoredPosition, "position to show at");
 					rectTransform.anchoredPosition = config.Value;
 					gameObject.AddComponent<Positionable>();

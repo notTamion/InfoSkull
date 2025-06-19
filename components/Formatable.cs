@@ -26,8 +26,11 @@ public class Formatable : MonoBehaviour {
 		});
 
 		inputField.onValueChanged.AddListener(text => {
-			if (Input.GetKeyDown(KeyCode.Escape)) return;
-			lastCommittedText = text;
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				return;
+			}
+
+			lastCommittedText = string.IsNullOrWhiteSpace(text) ? "{empty}" : text;
 		});
 
 		var contentSizeFitter = gameObject.AddComponent<ContentSizeFitter>();
