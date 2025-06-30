@@ -41,7 +41,7 @@ public class Formatter {
 			var gameManager = CL_GameManager.gMan;
 
 			if (WorldLoader.instance) {
-				var currLevel = levelOverride ? levelOverride : WorldLoader.instance.currentLevel.level;
+				var currLevel = levelOverride ? levelOverride : WorldLoader.instance.GetCurrentLevel().level;
 				format = format
 					.Replace(LEVEL, currLevel.levelName)
 					.Replace(BEST_LEVEL_TIME, Math.Round(Timer.bestLevelTime(currLevel), 2).ToString());
@@ -55,10 +55,10 @@ public class Formatter {
 				if (SettingsManager.settings.g_hard) num2 *= 2f;
 				var num3 = traverse.Field("speedMult").GetValue<float>() * num2 *
 				           traverse.Field("speedMultFrame").GetValue<float>();
-				if (WorldLoader.initialized && WorldLoader.isLoaded && WorldLoader.instance.currentLevel != null) {
-					num3 *= WorldLoader.instance.currentLevel.level.massSpeedMult;
-					if (WorldLoader.instance.currentLevel.level.subRegion != null)
-						num3 *= WorldLoader.instance.currentLevel.level.subRegion.massSpeedMult;
+				if (WorldLoader.initialized && WorldLoader.isLoaded && WorldLoader.instance.GetCurrentLevel() != null) {
+					num3 *= WorldLoader.instance.GetCurrentLevel().level.massSpeedMult;
+					if (WorldLoader.instance.GetCurrentLevel().level.subRegion != null)
+						num3 *= WorldLoader.instance.GetCurrentLevel().level.subRegion.massSpeedMult;
 				}
 
 				var speed = deathFloor.speed * num3;

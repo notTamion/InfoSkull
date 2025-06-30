@@ -5,17 +5,12 @@ using System.Linq;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using Febucci.UI;
-using Febucci.UI.Core;
-using Febucci.UI.Effects;
 using HarmonyLib;
 using InfoSkull.components;
 using InfoSkull.patches;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace InfoSkull;
 
@@ -59,7 +54,7 @@ public class Plugin : BaseUnityPlugin {
 				Display.format.Value.Contains(illegal)) && CL_GameManager.gamemode.allowLeaderboardScoring
 				                                        && !CL_GameManager.HasActiveFlag("leaderboardIllegal");
 
-		if (!CL_GameManager.gamemode.allowLeaderboardScoring) {
+		if (!CL_GameManager.gamemode.allowLeaderboardScoring && !SceneManager.GetSceneByName("Main-Menu").isLoaded) {
 			GameManagerPatch.highScoreQueue = "RUN IS LEADERBOARD ILLEGAL";
 			Commands.sendMessage("Leaderboard illegal variable used run will not be scored");
 			CL_GameManager.SetGameFlag("leaderboardIllegal", true);
@@ -69,6 +64,7 @@ public class Plugin : BaseUnityPlugin {
 	void Awake() {
 		instance = this;
 
+		upgradeConfig();
 		LevelTimer.format = Config.Bind("LevelTimer", "format", $"{Formatter.LEVEL_TIME} / {Formatter.BEST_LEVEL_TIME}",
 			"Format to display");
 		LevelTimer.onlyBest = Config.Bind("LevelTimer", "only-best", false, "Whether to only show new bests");
@@ -87,28 +83,43 @@ public class Plugin : BaseUnityPlugin {
 		logger.LogInfo($"{NAME} is loaded!");
 	}
 
+	void upgradeConfig() {
+		ConfigEntry<string> version;
+		if (!Config.TryGetEntry("General", "version", out version)) {
+			foreach (var configDefinition in Config.Keys) {
+				if (configDefinition.Key == "position") {
+					Config.Remove(configDefinition);
+				}
+			}
+		}
+
+		Config.Bind("General", "version", VERSION, "Used internally").Value = VERSION;
+	}
+
 	void callbacks() {
 		SceneManager.sceneLoaded += (scene, mode) => {
 			var highScore = GameObject.Find("High Score");
 			if (highScore) {
 				Vector2 vec = highScore.GetComponent<RectTransform>().anchoredPosition;
-				Display.position = Config.Bind("Display", "position", new Vector2(0, Screen.height / 2f - 50), "position to show at");
+				Display.position = instance.Config.Bind("Display", "position", new Vector2(0, Screen.height / 2f - 50), "position to show at");
 				display = GameObject.Instantiate(highScore, GameObject.Find("Game UI").transform);
 				display.AddComponent<components.Display>();
 
-				LevelTimer.position = Config.Bind("LevelTimer", "position", new Vector2(vec.x, vec.y-50), "position to show at");
+				LevelTimer.position = instance.Config.Bind("LevelTimer", "position", new Vector2(vec.x, vec.y-50), "position to show at"); 
 				levelTimer = GameObject.Instantiate(highScore, GameObject.Find("Game UI").transform);
 				levelTimer.AddComponent<components.LevelTimer>();
 				
 				foreach (var ui in UI_POS) {
 					var gameObject = GameObject.Find(ui);
 					var rectTransform = gameObject.GetComponent<RectTransform>();
-					if (ui == "Ascent Header") {
-						rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-						rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-						rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, Screen.height + rectTransform.anchoredPosition.y);
-					}
-					var config = Config.Bind(ui, "position", rectTransform.anchoredPosition, "position to show at");
+					rectTransform.anchoredPosition = 
+						new Vector2(
+							(rectTransform.anchorMax.x - 0.5f) * Screen.width / 1.08f + rectTransform.anchoredPosition.x, 
+							(rectTransform.anchorMax.y - 0.5f) * Screen.height / 1.08f + rectTransform.anchoredPosition.y
+						);
+					rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+					rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+					var config = instance.Config.Bind(ui, "position", rectTransform.anchoredPosition, "position to show at");
 					rectTransform.anchoredPosition = config.Value;
 					gameObject.AddComponent<Positionable>();
 				}

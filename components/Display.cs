@@ -21,7 +21,7 @@ public class Display : MonoBehaviour {
 		gameObject.AddComponent<Positionable>();
 
 		var rectTransform = GetComponent<RectTransform>();
-		rectTransform.anchoredPosition = Plugin.Display.position.Value / rectTransform.lossyScale;
+		rectTransform.anchoredPosition = Plugin.Display.position.Value;
 
 		text = GetComponent<TextMeshProUGUI>();
 		text.color = new Color(1, 1, 1, 0.1f);

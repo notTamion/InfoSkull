@@ -11,6 +11,6 @@ public class LevelTimer : MonoBehaviour {
 		gameObject.AddComponent<Positionable>();
 
 		var rectTransform = GetComponent<RectTransform>();
-		rectTransform.anchoredPosition = Plugin.LevelTimer.position.Value / rectTransform.lossyScale;
+		rectTransform.anchoredPosition = Plugin.LevelTimer.position.Value;
 	}
 }

@@ -12,7 +12,7 @@ public class TriggerZonePatch {
 	public static void postfixOnTriggerEnter(UT_TriggerZone __instance) {
 		try {
 			var new_level = (M_Level)__instance.gameObject.transform.parent.parent.GetComponent(typeof(M_Level));
-			if (WorldLoader.instance.currentLevel.level != new_level || time_on_close == null ||
+			if (WorldLoader.instance.GetCurrentLevel().level != new_level || time_on_close == null ||
 			    !Traverse.Create(__instance).Field<bool>("hasRun").Value) return;
 
 			Plugin.logger.LogInfo("Changed level: " + time_on_close.levelName + " - " + new_level.levelName);
