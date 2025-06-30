@@ -18,7 +18,7 @@ namespace InfoSkull;
 public class Plugin : BaseUnityPlugin {
 	const string GUID = "InfoSkull";
 	const string NAME = "InfoSkull";
-	const string VERSION = "1.0.1";
+	const string VERSION = "1.0.2";
 
 	public static Plugin instance;
 
@@ -114,8 +114,8 @@ public class Plugin : BaseUnityPlugin {
 					var rectTransform = gameObject.GetComponent<RectTransform>();
 					rectTransform.anchoredPosition = 
 						new Vector2(
-							(rectTransform.anchorMax.x - 0.5f) * Screen.width / 1.08f + rectTransform.anchoredPosition.x, 
-							(rectTransform.anchorMax.y - 0.5f) * Screen.height / 1.08f + rectTransform.anchoredPosition.y
+							(rectTransform.anchorMax.x - 0.5f) * (Screen.width / 1.08f) + rectTransform.anchoredPosition.x, 
+							(rectTransform.anchorMax.y - 0.5f) * (Screen.height / 1.08f) + rectTransform.anchoredPosition.y
 						);
 					rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
 					rectTransform.anchorMin = new Vector2(0.5f, 0.5f);

@@ -1,4 +1,5 @@
 ﻿extern alias unityengineold;
+using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -48,7 +49,11 @@ public class Positionable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 	}
 
 	public void OnEndDrag(PointerEventData eventData) {
-		if (inputField) inputField.enabled = true;
+		if (inputField) {
+			inputField.enabled = true;
+			inputField.ActivateInputField();
+			Traverse.Create(inputField).Field("caretRectTrans").GetValue<RectTransform>().anchoredPosition = rectTransform.anchoredPosition;
+		}
 		canvasGroup.blocksRaycasts = true;
 	}
 
