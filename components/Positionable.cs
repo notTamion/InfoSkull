@@ -1,8 +1,8 @@
-﻿extern alias unityengineold;
-using HarmonyLib;
+﻿using HarmonyLib;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using InfoSkull.utils;
 
 namespace InfoSkull.components;
 
@@ -18,6 +18,7 @@ public class Positionable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
 	public void OnBeginDrag(PointerEventData eventData) {
 		if (inputField) inputField.enabled = false;
+		if (EventSystem.current) EventSystem.current.SetSelectedGameObject(null);
 		canvasGroup.blocksRaycasts = false;
 
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -31,7 +32,7 @@ public class Positionable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 	public void OnDrag(PointerEventData eventData) {
 		Vector2 localPointerPosition;
 		if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-			    canvas.transform as RectTransform,
+			    canvas ? canvas.transform as RectTransform : rectTransform,
 			    eventData.position,
 			    eventData.pressEventCamera,
 			    out localPointerPosition)) {
@@ -55,6 +56,15 @@ public class Positionable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 			Traverse.Create(inputField).Field("caretRectTrans").GetValue<RectTransform>().anchoredPosition = rectTransform.anchoredPosition;
 		}
 		canvasGroup.blocksRaycasts = true;
+
+		var dyn = GetComponent<Display>();
+		if (dyn) {
+			var cfg = ConfigService.Data.elements.Find(e => e.id == dyn.elementId);
+			if (cfg != null) {
+				cfg.position = rectTransform.anchoredPosition;
+				ConfigService.Save();
+			}
+		}
 	}
 
 	void Awake() {

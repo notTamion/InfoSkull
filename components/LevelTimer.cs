@@ -1,5 +1,5 @@
-﻿extern alias unityengineold;
-using UnityEngine;
+﻿using UnityEngine;
+using InfoSkull.utils;
 
 namespace InfoSkull.components;
 
@@ -11,6 +11,6 @@ public class LevelTimer : MonoBehaviour {
 		gameObject.AddComponent<Positionable>();
 
 		var rectTransform = GetComponent<RectTransform>();
-		rectTransform.anchoredPosition = Plugin.LevelTimer.position.Value;
+		rectTransform.anchoredPosition = ConfigService.Data.levelTimerPosition;
 	}
 }

@@ -6,29 +6,30 @@ using unityengineold::UnityEngine;
 
 namespace InfoSkull;
 
-public class Formatter {
-	public const string LEVEL = "{level}"; // level name
-	public const string LEVEL_TIME = "{level_time}"; // level time
-	public const string HEIGHT = "{height}"; // player height
-	public const string BEST_LEVEL_TIME = "{best_level_time}"; // Best level time
-	public const string ASCENT_RATE = "{ascent_rate}"; // ascent rate
-	public const string GAME_TIME = "{game_time}"; // time in seconds since start of run
-	public const string CLOCK = "{clock}"; // clock displaying the time
-	public const string LEFT_STAMINA = "{left_stamina}"; // stamina of your left Hand. LEADERBOARD ILLEGAL
-	public const string RIGHT_STAMINA = "{right_stamina}"; // stamina of your right Hand. LEADERBOARD ILLEGAL
-	public const string MASS_HEIGHT = "{mass_height}"; // mass height. LEADERBOARD ILLEGAL
-	public const string MASS_SPEED = "{mass_speed}"; // mass speed. LEADERBOARD ILLEGAL
-	public const string MASS_ACC_MULT = "{mass_acc_mult}"; // mass acceleration multiplier
-	public const string MASS_DISTANCE = "{mass_distance}"; // distance from mass to player. LEADERBOARD ILLEGAL
-	public const string SCORE = "{score}"; // score 
-	public const string HIGH_SCORE = "{high_score}"; // high score
-	public const string ASCENT = "{ascent}"; // highest height reached in this run
-	public const string VELOCITY = "{velocity}"; // your velocity
-	public const string HEALTH = "{health}"; // your health. LEADERBOARD ILLEGAL
-	public const string EXTRA_JUMPS = "{extra_jumps}"; // extra jumps you have remaining. LEADERBOARD ILLEGAL
-	
-	public static readonly string EMPTY = "{empty}"; // highest height reached in this run
-	
+	public class Formatter {
+		public const string LEVEL = "{level}";
+		public const string LEVEL_TIME = "{level_time}";
+		public const string HEIGHT = "{height}";
+		public const string BEST_LEVEL_TIME = "{best_level_time}";
+		public const string ASCENT_RATE = "{ascent_rate}";
+		public const string GAME_TIME = "{game_time}";
+		public const string CLOCK = "{clock}";
+		public const string LEFT_STAMINA = "{left_stamina}";
+		public const string RIGHT_STAMINA = "{right_stamina}";
+		public const string MASS_HEIGHT = "{mass_height}";
+		public const string MASS_SPEED = "{mass_speed}";
+		public const string MASS_ACC_MULT = "{mass_acc_mult}";
+		public const string MASS_DISTANCE = "{mass_distance}";
+		public const string SCORE = "{score}";
+		public const string HIGH_SCORE = "{high_score}";
+		public const string ASCENT = "{ascent}";
+		public const string VELOCITY = "{velocity}";
+		public const string HEALTH = "{health}";
+		public const string EXTRA_JUMPS = "{extra_jumps}";
+		public const string ROACHES = "{roaches}";
+		public const string ROACHES_BANKED_THIS_RUN = "{roaches_banked_this_run}";
+		public static readonly string EMPTY = "{empty}";
+
 	public static M_Level levelOverride;
 
 	public static string format(string format, Dictionary<string, string> overrides = null) {
@@ -91,6 +92,8 @@ public class Formatter {
 				.Replace(EXTRA_JUMPS, Traverse.Create(player).Field("extraJumpsRemaining").GetValue<int>().ToString())
 				.Replace(HEALTH, Math.Round(player.health, 1).ToString())
 				.Replace(MASS_ACC_MULT, Math.Round(CL_GameManager.gamemode.gooSpeedIncreaseMult).ToString())
+				.Replace(ROACHES, CL_GameManager.roaches.ToString())
+				.Replace(ROACHES_BANKED_THIS_RUN, Plugin.roachesBankedThisRun.ToString())
 				.Replace(EMPTY, "");
 		}
 		catch (NullReferenceException _) { }

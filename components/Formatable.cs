@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using InfoSkull.utils;
 namespace InfoSkull.components;
 
 public class Formatable : MonoBehaviour {
@@ -28,6 +28,14 @@ public class Formatable : MonoBehaviour {
 			}
 
 			lastCommittedText = string.IsNullOrWhiteSpace(text) ? "{empty}" : text;
+		});
+
+		inputField.onEndEdit.AddListener(textValue => {
+			var dyn = GetComponent<Display>();
+			if (dyn) {
+				var cfg = ConfigService.Data.elements.Find(e => e.id == dyn.elementId);
+				if (cfg != null) { cfg.format = lastCommittedText; ConfigService.Save(); }
+			}
 		});
 
 		// Re-enable to create caret object
