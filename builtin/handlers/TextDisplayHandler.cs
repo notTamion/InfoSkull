@@ -1,42 +1,37 @@
-﻿extern alias unityengineold;
 using Febucci.UI;
 using Febucci.UI.Effects;
+using InfoSkull.core;
+using InfoSkull.core.components;
 using TMPro;
 using UnityEngine;
-using Color = UnityEngine.Color;
 
-namespace InfoSkull.components;
+namespace InfoSkull.builtin.handlers;
 
-public class Display : MonoBehaviour {
+public class TextDisplayHandler : ElementHandler {
+	ElementController controller;
 	TextAnimator_TMP animator;
 	bool animatorConfigured;
 	bool lastFrameSet;
-	
+
 	TextMeshProUGUI text;
 
-	void Awake() {
-		name = "InfoSkull Display";
+	public override void init(ElementController controller) {
+		this.controller = controller;
 		
-		gameObject.AddComponent<Formatable>();
-		gameObject.AddComponent<Positionable>();
-
-		var rectTransform = GetComponent<RectTransform>();
-		rectTransform.anchoredPosition = Plugin.Display.position.Value;
-
 		text = GetComponent<TextMeshProUGUI>();
 		text.color = new Color(1, 1, 1, 0.1f);
-	
+
 		animator = GetComponent<TextAnimator_TMP>();
 	}
 
 	void Update() {
-		if (lastFrameSet || Plugin.isAdjustingUI) {
+		if (lastFrameSet || core.InfoSkull.isAdjustingUI) {
 			lastFrameSet = false;
 			return;
 		}
 
 		lastFrameSet = true;
-		if (text) text.SetText(Formatter.format(Plugin.Display.format.Value));
+		if (text) text.SetText(Formatter.format(controller.config().data["format"] as string ?? "{empty}"));
 
 		if (!animatorConfigured && animator && animator.Behaviors.Length == 2) {
 			((ShakeBehavior)animator.Behaviors[0].animation).baseAmplitude = 0.5f;

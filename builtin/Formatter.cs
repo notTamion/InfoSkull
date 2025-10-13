@@ -43,8 +43,8 @@ public class Formatter {
 			if (WorldLoader.instance) {
 				var currLevel = levelOverride ? levelOverride : WorldLoader.instance.GetCurrentLevel().level;
 				format = format
-					.Replace(LEVEL, currLevel.levelName)
-					.Replace(BEST_LEVEL_TIME, Math.Round(Timer.bestLevelTime(currLevel), 2).ToString());
+					.Replace(LEVEL, currLevel.levelName);
+				//.Replace(BEST_LEVEL_TIME, Math.Round(Timer.bestLevelTime(currLevel), 2).ToString());
 			}
 
 			if (DEN_DeathFloor.instance) {
@@ -77,7 +77,7 @@ public class Formatter {
 			
 			return format
 				.Replace("\\n", "\n")
-				.Replace(LEVEL_TIME, Math.Round(Timer.currentLevelTime(), 2).ToString())
+				//.Replace(LEVEL_TIME, Math.Round(Timer.currentLevelTime(), 2).ToString())
 				.Replace(ASCENT_RATE, Math.Round(gameManager.GetPlayerAscentRate(), 2).ToString())
 				.Replace(GAME_TIME, gameTime)
 				.Replace(CLOCK, DateTime.Now.ToString("HH:mm"))
