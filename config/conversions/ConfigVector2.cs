@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace InfoSkull.config.conversions;
@@ -15,7 +17,9 @@ public class ConfigVector2 {
 		return new Vector2(x, y);
 	}
 	
-	public static ConfigVector2 fromVector2(Vector2 vec) {
-		return new ConfigVector2(vec.x, vec.y);
+	public static Vector2 fromDict(object dicto) {
+		if (dicto is ConfigVector2 vec) return vec.toVector2();
+		var dict = (JObject) dicto;
+		return new Vector2((float) dict["x"], (float) dict["y"]);
 	}
 }

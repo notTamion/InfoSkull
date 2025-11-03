@@ -19,7 +19,7 @@ public class TextDisplayHandler : ElementHandler {
 		this.controller = controller;
 		
 		text = GetComponent<TextMeshProUGUI>();
-		text.color = new Color(1, 1, 1, 0.1f);
+		text.color = new Color(1, 1, 1, 1.0f);
 
 		animator = GetComponent<TextAnimator_TMP>();
 	}

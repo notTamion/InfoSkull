@@ -67,6 +67,7 @@
         <Reference Include="UnityEngine.UIModule">
             <HintPath>C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\White Knuckle_Data\Managed\UnityEngine.UIModule.dll</HintPath>
         </Reference>
+        <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.22621.756" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

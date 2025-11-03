@@ -10,6 +10,7 @@ public class ElementType {
 	internal string name;
 	internal Action<ElementController> onInstantiateAction;
 	internal Func<ElementConfig, GameObject> creator;
+	internal bool _allowCreation = true;
 
 	public static ElementType create(string name) {
 		return new ElementType {
@@ -24,6 +25,11 @@ public class ElementType {
 
 	public ElementType objectCreator(Func<ElementConfig, GameObject> creator) {
 		this.creator = creator;
+		return this;
+	}
+
+	public ElementType allowCreationByMenu(bool allowCreation) {
+		_allowCreation = allowCreation;
 		return this;
 	}
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using InfoSkull.core;
 using InfoSkull.core.components;
 using TMPro;
@@ -11,14 +12,34 @@ public class FormatHandler : ElementHandler {
 	TMP_InputField inputField;
 	public string lastCommittedText = "";
 	TextMeshProUGUI text;
+	
+	static readonly List<string> LEADERBOARD_ILLEGAL = [
+		Formatter.LEFT_STAMINA,
+		Formatter.RIGHT_STAMINA,
+		Formatter.MASS_DISTANCE,
+		Formatter.MASS_HEIGHT,
+		Formatter.MASS_SPEED,
+		Formatter.HEALTH,
+		Formatter.EXTRA_JUMPS
+	];
 
 	public override void init(ElementController controller) {
+		controller.checkLeaderboardLegal += () => {
+			if (!controller.config().data.ContainsKey("format")) return true;
+			foreach (var illegal in LEADERBOARD_ILLEGAL) {
+				if (((string)controller.config().data["format"]).Contains(illegal)) {
+					return false;
+				}
+			}
+
+			return true;
+		};
+		
 		this.controller = controller;
 		text = GetComponent<TextMeshProUGUI>();
 		text.raycastTarget = true;
 
 		inputField = gameObject.AddComponent<TMP_InputField>();
-		inputField.richText = false;
 		inputField.textComponent = text;
 
 		inputField.contentType = TMP_InputField.ContentType.Standard;
@@ -45,15 +66,19 @@ public class FormatHandler : ElementHandler {
 	}
 	
 	public override void openAdjustUI() {
+		inputField.richText = false;
+		text.richText = false;
 		if (inputField) {
 			inputField.text = controller.config().data.ContainsKey("format")
 				? (string) controller.config().data["format"]
-				: "{" + controller.name.ToLower().Replace(" ", "_") + "}";
+				: "{empty}";
 			inputField.enabled = true;
 		}
 	}
 	
 	public override void closeAdjustUI() {
+		inputField.richText = true;
+		text.richText = true;
 		if (inputField) {
 			inputField.text = "";
 			inputField.enabled = false;

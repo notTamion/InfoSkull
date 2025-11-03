@@ -2,16 +2,19 @@ extern alias unityengineold;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using InfoSkull.config;
 using InfoSkull.config.profiles.elements;
 using InfoSkull.core.components;
+using InfoSkull.patches;
+using Mono.CompilerServices.SymbolWriter;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace InfoSkull.core;
 
 public class InfoSkull {
-	static Dictionary<string, ElementType> registeredTypes = new Dictionary<string, ElementType>();
+	internal static Dictionary<string, ElementType> registeredTypes = new Dictionary<string, ElementType>();
 	internal static List<ElementController> elements = new List<ElementController>();
 	public static Action onInitElements;
 	
@@ -24,38 +27,84 @@ public class InfoSkull {
 	
 	static void callbacks() {
 		SceneManager.sceneLoaded += (scene, mode) => {
-			GameObject.Find("High Score").GetComponent<UT_TextScrawl>().StartCoroutine(initElements());
+			var canvas = GameObject.Find("Canvas");
+			if (!canvas) return;
+			var manager = GameObject.Find("GameManager");
+			if (!manager) return;
+			canvas.GetComponent<UI_CanvasScaler>().StartCoroutine(initElements());
 		};
 	}
 	
-	static IEnumerator initElements()
-	{
+	public static void selectProfile(int index) {
+		if (index < 0 || index >= Config.instance.profiles.Count) {
+			throw new Exception($"Profile index {index} is out of range");
+		}
+		Config.instance.selectedProfile = index;
+		foreach (var elementController in elements) {
+			GameObject.Destroy(elementController.gameObject);
+		}
+		var canvas = GameObject.Find("Canvas");
+		if (!canvas) return;
+		var manager = GameObject.Find("GameManager");
+		if (!manager) return;
+		canvas.GetComponent<UI_CanvasScaler>().StartCoroutine(initElements());
+	}
+	
+	public static IEnumerator initElements() {
 		yield return new WaitForEndOfFrame(); // waits until all layout and canvas updates
 		
 		elements.Clear();
+		RadialMenu.init();
 
+		onInitElements();
+		
 		Config.instance.profiles[Config.instance.selectedProfile].elements.ForEach(element => {
-			instantiateType(registeredTypes[element.type], element, false);
+			try {
+				instantiateType(registeredTypes[element.type], element, false);
+			}
+			catch (Exception e) { }
 		});
 		
-		onInitElements();
 		Config.instance.save();
+		
+		checkLeaderboard();
+	}
+	
+	public static void checkLeaderboard() {
+		CL_GameManager.gamemode.allowLeaderboardScoring = (elements.All(element => {
+			                                                   return element.checkLeaderboardLegal == null 
+			                                                          || element.checkLeaderboardLegal
+				                                                          .GetInvocationList()
+				                                                          .All(func => ((Func<bool>)func).Invoke()); 
+		                                                   }) 
+		                                                   && !CL_GameManager.HasActiveFlag("leaderboardIllegal")) 
+		                                                   && CL_GameManager.gamemode.allowLeaderboardScoring;
+		if (!CL_GameManager.gamemode.allowLeaderboardScoring && !SceneManager.GetSceneByName("Main-Menu").isLoaded) {
+			GameManagerPatchBuiltin.highScoreQueue = "SESSION IS LEADERBOARD ILLEGAL";
+			CL_GameManager.SetGameFlag("leaderboardIllegal", true);
+		}
 	}
 
 	internal static void openAdjustUI() {
 		GameObject.Find("Pause Menu").SetActive(false);
 		isAdjustingUI = true;
 		foreach (var controller in elements) {
-			controller.openAdjustUI();
+			try {
+				controller.openAdjustUI();
+			} catch (Exception e) {}
 		}
 	}
 	
 	internal static void disableAdjustUI() {
 		foreach (var controller in elements) {
-			controller.closeAdjustUI();
+			try {
+				controller.closeAdjustUI();
+			} catch (Exception e) {}
 		}
 		isAdjustingUI = false;
 		Config.instance.save();
+		RadialMenu.instance.hideMenu();
+		checkLeaderboard();
 	}
 	
 	public static void registerType(ElementType type) {
@@ -65,7 +114,7 @@ public class InfoSkull {
 		registeredTypes[type.name] = type;
 	}
 
-	public static void instantiateType(ElementType type, ElementConfig config = null, bool save = true) {
+	public static ElementController instantiateType(ElementType type, ElementConfig config = null, bool save = true) {
 		if(!registeredTypes.ContainsKey(type.name)) {
 			throw new Exception($"Type {type.name} is not registered");
 		}
@@ -83,5 +132,6 @@ public class InfoSkull {
 		controller.init(type, config);
 		type.onInstantiateAction.Invoke(controller);
 		elements.Add(controller);
+		return controller;
 	}
 }

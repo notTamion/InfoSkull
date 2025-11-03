@@ -22,7 +22,7 @@ public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, 
 		inputField = GetComponent<TMP_InputField>();
 		
 		if (controller.config().data.ContainsKey("position")) {
-			var pos = ((ConfigVector2) controller.config().data["position"]).toVector2();
+			var pos = ConfigVector2.fromDict(controller.config().data["position"]);
 			pos.x *= Screen.width;
 			pos.y *= Screen.height;
 			controller.gameObject.transform.position = pos;
