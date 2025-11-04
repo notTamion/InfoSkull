@@ -13,28 +13,19 @@ public class FormatHandler : ElementHandler {
 	public string lastCommittedText = "";
 	TextMeshProUGUI text;
 	
-	static readonly List<string> LEADERBOARD_ILLEGAL = [
-		Formatter.LEFT_STAMINA,
-		Formatter.RIGHT_STAMINA,
-		Formatter.MASS_DISTANCE,
-		Formatter.MASS_HEIGHT,
-		Formatter.MASS_SPEED,
-		Formatter.HEALTH,
-		Formatter.EXTRA_JUMPS
-	];
 
-	public override void init(ElementController controller) {
-		controller.checkLeaderboardLegal += () => {
+	public override bool isLeaderboardLegal() {
 			if (!controller.config().data.ContainsKey("format")) return true;
-			foreach (var illegal in LEADERBOARD_ILLEGAL) {
+			foreach (var illegal in Formatter.LEADERBOARD_ILLEGAL) {
 				if (((string)controller.config().data["format"]).Contains(illegal)) {
 					return false;
 				}
 			}
 
 			return true;
-		};
-		
+	}
+
+	public override void init(ElementController controller) {
 		this.controller = controller;
 		text = GetComponent<TextMeshProUGUI>();
 		text.raycastTarget = true;
@@ -63,6 +54,9 @@ public class FormatHandler : ElementHandler {
 		var contentSizeFitter = gameObject.AddComponent<ContentSizeFitter>();
 		contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 		contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+		controller.config().data["format"] = controller.config().data.ContainsKey("format")
+			? (string) controller.config().data["format"]
+			: "{empty}";
 	}
 	
 	public override void openAdjustUI() {

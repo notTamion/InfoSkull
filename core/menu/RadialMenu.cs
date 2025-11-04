@@ -1,7 +1,12 @@
 using System.Collections;
+using System.Linq;
+using System.Text;
+using Windows.ApplicationModel.DataTransfer;
 using InfoSkull.config;
 using InfoSkull.config.profiles;
+using InfoSkull.config.profiles.elements;
 using InfoSkull.core.menu;
+using Newtonsoft.Json;
 using TMPro;
 
 namespace InfoSkull.core.components;
@@ -41,7 +46,6 @@ public class RadialMenu : MonoBehaviour {
                     subButtons.Add(new MenuButton($"{type.Key}", m => {
                         var element = InfoSkull.instantiateType(type.Value);
                         element.transform.position = Input.mousePosition;
-                        element.openAdjustUI();
                         
                         menu.hideMenu();
                     }));
@@ -72,8 +76,40 @@ public class RadialMenu : MonoBehaviour {
                 InfoSkull.selectProfile(Math.Max(0, Config.instance.selectedProfile - 1));
                 menu.hideMenu();
             }));
+            subButtons.Add(new MenuButton("Export", m => {
+                GUIUtility.systemCopyBuffer =
+                    Convert.ToBase64String(
+                        Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Config.currentProfile())));
+                menu.hideMenu();
+            }));
+            subButtons.Add(new MenuButton("Import", m => {
+                try {
+                    var profile = JsonConvert.DeserializeObject<ProfileConfig>(
+                        Encoding.UTF8.GetString(Convert.FromBase64String(GUIUtility.systemCopyBuffer)));
+                    Config.instance.profiles.Add(profile);
+                    InfoSkull.selectProfile(Config.instance.profiles.Count - 1);
+                    menu.hideMenu();
+                }
+                catch (Exception e) {
+                    // Invalid format
+                }
+            }));
             menu.updateMenu(subButtons);
         }));
+        
+#if DEBUG
+        list.Add(new MenuButton("Debug", menu => {
+            List<MenuButton> subButtons = new List<MenuButton>();
+            subButtons.Add(new MenuButton("Test Formatter", m => {
+                var element = InfoSkull.instantiateType(InfoSkull.registeredTypes["text_display"], ElementConfig.create("text_display", new Dictionary<string, object> {
+                    {"format", string.Join("\n", Formatter.replacements.Keys.Select(k => $"{k.Trim('{', '}')}: {k}"))},
+                }));
+                element.transform.position = Input.mousePosition;
+                menu.hideMenu();
+            }));
+            menu.updateMenu(subButtons);
+        }));
+#endif
     };
 
     internal static RadialMenu instance;
@@ -156,6 +192,10 @@ public class RadialMenu : MonoBehaviour {
             textRT.offsetMin = Vector2.zero;
             textRT.offsetMax = Vector2.zero;
 
+            
+            var contentSizeFitter = textGO.AddComponent<ContentSizeFitter>();
+            contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
             TextMeshProUGUI text = textGO.AddComponent<TextMeshProUGUI>();
             text.text = buttons[i].label;
             text.color = Color.white;

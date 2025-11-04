@@ -95,6 +95,8 @@ public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, 
 				rectTransform.anchoredPosition;
 		}
 
+		var pos = controller.gameObject.transform.position;
+		controller.config().data["position"] = new ConfigVector2(pos.x / Screen.width, pos.y / Screen.height);
 		canvasGroup.blocksRaycasts = true;
 	}
 }

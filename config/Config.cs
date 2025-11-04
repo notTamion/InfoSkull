@@ -20,6 +20,10 @@ public class Config {
 	public int selectedProfile;
 	public List<ProfileConfig> profiles = new List<ProfileConfig>();
 
+	public static ProfileConfig currentProfile() {
+		return instance.profiles[instance.selectedProfile];
+	}
+
 	public static void init() {
 		if (instance != null) return;
 
@@ -51,7 +55,7 @@ public class Config {
 	public static void defaultProfile(ProfileConfig profile) {
 		profile.elements.Add(ElementConfig.create("text_display", new Dictionary<string, object> {
 			{"format", "{game_time}"},
-			{"position", new ConfigVector2(0.5f, 0.95f)}
+			{"position", new ConfigVector2(0.5f, 0.98f)}
 		}));
 
 		foreach (var name in InfoSkullBuiltins.BASE_GAME_POS) {

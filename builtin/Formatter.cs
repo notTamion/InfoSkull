@@ -33,9 +33,9 @@ public class Formatter {
 	public static Dictionary<string, Func<string>> replacements = new Dictionary<string, Func<string>> {
 		{ LEVEL, () => WorldLoader.instance.GetCurrentLevel().level.levelName },
 		{ LEVEL_TIME, () => Math.Round(Timer.currentLevelTime(), 2).ToString() },
-		{ HEIGHT, () => Math.Round(ENT_Player.playerObject.transform.position.y, 0).ToString() }, {
-			BEST_LEVEL_TIME,
-			() => Math.Round(Timer.bestLevelTime(WorldLoader.instance.GetCurrentLevel().level), 2).ToString()
+		{ HEIGHT, () => Math.Round(ENT_Player.playerObject.transform.position.y, 0).ToString() },
+		{ BEST_LEVEL_TIME, () => 
+			Math.Round(Timer.bestLevelTime(WorldLoader.instance.GetCurrentLevel().level), 2).ToString()
 		},
 		{ ASCENT_RATE, () => Math.Round(CL_GameManager.gMan.GetPlayerAscentRate(), 2).ToString() },
 		{ GAME_TIME, () => {
@@ -80,6 +80,16 @@ public class Formatter {
 		{ EXTRA_JUMPS, () => Traverse.Create(ENT_Player.playerObject).Field("extraJumpsRemaining").GetValue<int>().ToString() },
 		{ EMPTY, () => "" }
 	};
+	
+	public static List<string> LEADERBOARD_ILLEGAL = [
+		LEFT_STAMINA,
+		RIGHT_STAMINA,
+		MASS_DISTANCE,
+		MASS_HEIGHT,
+		MASS_SPEED,
+		HEALTH,
+		EXTRA_JUMPS
+	];
 	
 	public static string format(string format, Dictionary<string, string> overrides = null) { 
 		if (overrides != null) {

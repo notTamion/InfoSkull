@@ -15,7 +15,7 @@ namespace InfoSkull.core;
 
 public class InfoSkull {
 	internal static Dictionary<string, ElementType> registeredTypes = new Dictionary<string, ElementType>();
-	internal static List<ElementController> elements = new List<ElementController>();
+	public static List<ElementController> elements = new List<ElementController>();
 	public static Action onInitElements;
 	
 	public static bool isAdjustingUI;
@@ -39,10 +39,11 @@ public class InfoSkull {
 		if (index < 0 || index >= Config.instance.profiles.Count) {
 			throw new Exception($"Profile index {index} is out of range");
 		}
-		Config.instance.selectedProfile = index;
-		foreach (var elementController in elements) {
-			GameObject.Destroy(elementController.gameObject);
+		for (var i = elements.Count - 1; i >= 0; i--) {
+			InfoSkullPlugin.logger.LogError(elements[i].name);
+			elements[i].liveUnload.Invoke();
 		}
+		Config.instance.selectedProfile = index;
 		var canvas = GameObject.Find("Canvas");
 		if (!canvas) return;
 		var manager = GameObject.Find("GameManager");
@@ -64,21 +65,16 @@ public class InfoSkull {
 			}
 			catch (Exception e) { }
 		});
-		
 		Config.instance.save();
 		
 		checkLeaderboard();
 	}
 	
 	public static void checkLeaderboard() {
-		CL_GameManager.gamemode.allowLeaderboardScoring = (elements.All(element => {
-			                                                   return element.checkLeaderboardLegal == null 
-			                                                          || element.checkLeaderboardLegal
-				                                                          .GetInvocationList()
-				                                                          .All(func => ((Func<bool>)func).Invoke()); 
-		                                                   }) 
-		                                                   && !CL_GameManager.HasActiveFlag("leaderboardIllegal")) 
+		CL_GameManager.gamemode.allowLeaderboardScoring = elements.All(element => element.handlers.All(handler => handler.isLeaderboardLegal()))
+		                                                   && !CL_GameManager.HasActiveFlag("leaderboardIllegal") 
 		                                                   && CL_GameManager.gamemode.allowLeaderboardScoring;
+		
 		if (!CL_GameManager.gamemode.allowLeaderboardScoring && !SceneManager.GetSceneByName("Main-Menu").isLoaded) {
 			GameManagerPatchBuiltin.highScoreQueue = "SESSION IS LEADERBOARD ILLEGAL";
 			CL_GameManager.SetGameFlag("leaderboardIllegal", true);
@@ -132,6 +128,7 @@ public class InfoSkull {
 		controller.init(type, config);
 		type.onInstantiateAction.Invoke(controller);
 		elements.Add(controller);
+		if (isAdjustingUI) controller.openAdjustUI();
 		return controller;
 	}
 }

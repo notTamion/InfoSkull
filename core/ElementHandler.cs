@@ -8,4 +8,5 @@ public abstract class ElementHandler : MonoBehaviour {
 	public abstract void init(ElementController controller);
 	public virtual void openAdjustUI() { }
 	public virtual void closeAdjustUI() { }
+	public virtual bool isLeaderboardLegal() { return true; }
 }

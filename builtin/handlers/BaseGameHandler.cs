@@ -2,6 +2,7 @@ using InfoSkull.core;
 using InfoSkull.core.components;
 using InfoSkull.core.menu;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace InfoSkull.builtin.handlers;
@@ -10,6 +11,16 @@ public class BaseGameHandler : ElementHandler {
 	ElementController controller;
 	
 	public override void init(ElementController controller) {
+		controller.liveUnload = () => {
+			gameObject.GetComponent<TextMeshProUGUI>().SetText("");
+			gameObject.GetComponent<TextMeshProUGUI>().alpha = 1f;
+			foreach (var handler in controller.handlers) {
+				Destroy(handler);
+			}
+			Destroy(GetComponent<ContentSizeFitter>());
+			core.InfoSkull.elements.Remove(controller);
+			Destroy(controller);
+		};
 		this.controller = controller;
 		if (!controller.config().data.ContainsKey("disabled")) controller.config().data["disabled"] = false;
 		

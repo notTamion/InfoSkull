@@ -50,6 +50,7 @@ public class InfoSkullBuiltins {
 				controller.registerHandler(baseGamehandler);
 				var handler = controller.gameObject.AddComponent<PositionHandler>();
 				controller.registerHandler(handler);
+
 			}).allowCreationByMenu(false)
 			.register();
 	}
