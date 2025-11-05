@@ -1,0 +1,27 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - v2 # REMOVE ON MERGE
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bins SSH KEY
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.BINS_REPO_KEY }}
+      - name: Checkout Bins
+        run: |
+          git clone git@github.com:nottamion/white-knuckle-bins.git libs
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      - name: Build
+        run: dotnet build -c Release
