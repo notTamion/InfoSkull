@@ -62,7 +62,7 @@ public class InfoSkull {
 			try {
 				instantiateType(registeredTypes[element.type], element, false);
 			}
-			catch (Exception e) { }
+			catch (Exception) { }
 		});
 		Config.instance.save();
 		
@@ -86,7 +86,7 @@ public class InfoSkull {
 		foreach (var controller in elements) {
 			try {
 				controller.openAdjustUI();
-			} catch (Exception e) {}
+			} catch (Exception) {}
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class InfoSkull {
 		foreach (var controller in elements) {
 			try {
 				controller.closeAdjustUI();
-			} catch (Exception e) {}
+			} catch (Exception) {}
 		}
 		isAdjustingUI = false;
 		Config.instance.save();

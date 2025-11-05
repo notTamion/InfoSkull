@@ -12,7 +12,7 @@ public class MenuButton {
 		this.onClick = onClick;
 	}
 
-	public MenuButton create(string label, Action<RadialMenu> onClick) {
+	public static MenuButton create(string label, Action<RadialMenu> onClick) {
 		return new MenuButton(label, onClick);
 	}
 }

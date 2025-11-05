@@ -89,9 +89,7 @@ public class RadialMenu : MonoBehaviour {
                     InfoSkull.selectProfile(Config.instance.profiles.Count - 1);
                     menu.hideMenu();
                 }
-                catch (Exception e) {
-                    // Invalid format
-                }
+                catch (Exception) { }
             }));
             menu.updateMenu(subButtons);
         }));
