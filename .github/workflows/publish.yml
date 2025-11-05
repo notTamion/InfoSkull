@@ -23,5 +23,22 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.0.x'
-      - name: Build
-        run: dotnet build -c Release
+      - name: Build and Package
+        run: |
+          dotnet build -c Release
+          mkdir dist mv ./bin/Release/net471/InfoSkull.dll ./dist
+      - name: Determine Thunderstore Environment
+        id: tstore-env
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "token=${{ secrets.THUNDERSTORE_TOKEN }}" >> $GITHUB_OUTPUT
+            echo "repo=https://thunderstore.io" >> $GITHUB_OUTPUT
+          else
+            echo "token=${{ secrets.THUNDERSTORE_TOKEN_DEV }}" >> $GITHUB_OUTPUT
+            echo "repo=https://thunderstore.dev" >> $GITHUB_OUTPUT
+          fi 
+      - name: Publish to Thunderstore
+        run: |
+          tcli publish \
+            --token "${{ steps.tstore-env.outputs.token }}" \
+            --repository "${{ steps.tstore-env.outputs.repo }}"
