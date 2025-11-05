@@ -40,7 +40,6 @@ public class InfoSkull {
 			throw new Exception($"Profile index {index} is out of range");
 		}
 		for (var i = elements.Count - 1; i >= 0; i--) {
-			InfoSkullPlugin.logger.LogError(elements[i].name);
 			elements[i].liveUnload.Invoke();
 		}
 		Config.instance.selectedProfile = index;

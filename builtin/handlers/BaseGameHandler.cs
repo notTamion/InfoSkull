@@ -11,6 +11,7 @@ public class BaseGameHandler : ElementHandler {
 	ElementController controller;
 	
 	public override void init(ElementController controller) {
+		gameObject.GetComponent<TextMeshProUGUI>().alpha = (bool) controller.config().data["disabled"] ? 0f : 1f;
 		controller.liveUnload = () => {
 			gameObject.GetComponent<TextMeshProUGUI>().SetText("");
 			gameObject.GetComponent<TextMeshProUGUI>().alpha = 1f;
@@ -27,6 +28,7 @@ public class BaseGameHandler : ElementHandler {
 		controller.menuSettings().menuButtonCallback += (buttons) => {
 			buttons.Add(new MenuButton((bool) controller.config().data["disabled"] ? "Enable" : "Disable", menu => {
 				controller.config().data["disabled"] = !(bool) controller.config().data["disabled"];
+				menu.hideMenu();
 			}));
 		};
 		
