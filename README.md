@@ -1,6 +1,5 @@
-﻿<img style="float: right;" src="icon.png">
-
-# InfoSkull
+﻿# InfoSkull
+[github](https://github.com/notTamion/InfoSkull) | [thunderstore](https://thunderstore.io/c/white-knuckle/p/notTamion/InfoSkull/)\
 InfoSkull is a White Knuckle mod that aims to make UI more customizable.
 
 > [!IMPORTANT]
@@ -86,7 +85,8 @@ this is still pending, but you can look at the source code of the built-ins to g
 a rough idea.
 
 ## Contributing
-If you want to contribute to InfoSkull, feel free to open an issue or a pull request.
+If you want to contribute to InfoSkull, feel free to open an issue or a pull request
+(please contact me via discord or an issue before starting work on larger changes).
 
 ## Help
 If you need help with InfoSkull, you can contact me on Discord. My handle is `tamion`.

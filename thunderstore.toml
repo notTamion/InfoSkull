@@ -22,7 +22,7 @@ target = ""
 
 
 [publish]
-repository = "https://thunderstore.dev"
+repository = "https://thunderstore.io"
 communities = [ "white-knuckle" ]
 [publish.categories]
 white-knuckle = [ "leaderboard-legal", "mods", "tools", "misc", "libraries", "tweaks" ]

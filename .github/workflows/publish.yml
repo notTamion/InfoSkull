@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
-      - v2 # REMOVE ON MERGE
 
 jobs:
   publish:
@@ -28,20 +26,20 @@ jobs:
           dotnet build -c Release
           mkdir rel 
           mv ./bin/Release/net471/InfoSkull.dll ./rel
-      - name: Determine Thunderstore Environment
-        id: tstore-env
-        run: |
-          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
-            echo "token=${{ secrets.THUNDERSTORE_TOKEN }}" >> $GITHUB_OUTPUT
-            echo "repo=https://thunderstore.io" >> $GITHUB_OUTPUT
-          else
-            echo "token=${{ secrets.THUNDERSTORE_TOKEN_DEV }}" >> $GITHUB_OUTPUT
-            echo "repo=https://thunderstore.dev" >> $GITHUB_OUTPUT
-          fi 
       - name: Publish to Thunderstore
         run: |
           sed -i '1s/^\xEF\xBB\xBF//' README.md
           dotnet tool install -g tcli
           tcli publish \
-            --token "${{ steps.tstore-env.outputs.token }}" \
-            --repository "${{ steps.tstore-env.outputs.repo }}"
+            --token "${{ secrets.THUNDERSTORE_TOKEN }}"
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep -E '^versionNumber *= *"' thunderstore.toml | sed 's/versionNumber *= *"\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Create GitHub Release (main only)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.version.outputs.version }}"
+          name: "v${{ steps.version.outputs.version }}"
+          generate_release_notes: true
