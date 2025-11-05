@@ -8,17 +8,10 @@ public class Timer {
 
 		var statName = "info-skull-" + level.levelName + "-best-time";
 
-		if (Plugin.LevelTimer.saving.Value) {
-			StatManager.sessionStats.UpdateStatistic(statName,
-				currentTime, StatManager.Statistic.DataType.Float,
-				StatManager.Statistic.ModType.Min, StatManager.Statistic.DisplayType.Time,
-				StatManager.Statistic.ModType.Min);
-		}
-
-		string format = Plugin.LevelTimer.format.Value;
-		if ((currentLevelTime() < bestLevelTime(level) || !Plugin.LevelTimer.onlyBest.Value) && format != "") {
-			Plugin.levelTimer.GetComponent<UT_TextScrawl>().ShowText(Formatter.format(format));
-		} 
+		StatManager.sessionStats.UpdateStatistic(statName,
+			currentTime, StatManager.Statistic.DataType.Float,
+			StatManager.Statistic.ModType.Min, StatManager.Statistic.DisplayType.Time,
+			StatManager.Statistic.ModType.Min);
 
 		levelEnterTime = CL_GameManager.gMan.GetGameTime();
 	}

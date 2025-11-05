@@ -1,51 +1,92 @@
 ﻿# InfoSkull
-White Knuckle Mod that projects more info right into your skull
+[github](https://github.com/notTamion/InfoSkull) | [thunderstore](https://thunderstore.io/c/white-knuckle/p/notTamion/InfoSkull/)\
+InfoSkull is a White Knuckle mod that aims to make UI more customizable.
 
-## Installation
+> [!IMPORTANT]
+> InfoSkull is leaderboard **LEGAL**, however certain configurations may
+> void leaderboard legality. You will be notified in-game if your current
+> configuration is not leaderboard legal.
 
-### Thunderstore
-The mod is available on Thunderstore where you can install via their app.
+## Getting Started
+To get started with InfoSkull you have multiple options to choose from.
 
-### Manual
-As with any BepInEx Mod:
-1. Install BepInEx
-2. Drop the mod dll into the `BepInEx/plugins` folder
-3. Done
+A more in-dept guide for using mods can be found on the [White Knuckle 
+discord](https://discord.com/channels/1278757582038630410/1384190139059798016)
 
-## Customization
-Most of the customization is available via the added `Adjust UI` pause button,
-here you can move and/or format ui elements by dragging or clicking on them to edit.
+### Thunderstore Mod Manager (Recommended)
+InfoSkull is available on [Thunderstore](https://thunderstore.io/c/white-knuckle/p/notTamion/InfoSkull/) 
+for easy installation and updates.
 
-Certain config options are only available by using the `is` command in the
-ingame console which is accessible by pressing `Shift + ~` or if you don't have a
-tilde key `Shift + Fn + Esc`.
+### Manual Installation
+To manually install InfoSkull you first need to download 
+[BepInEx 5.x.x](https://docs.bepinex.dev/articles/user_guide/installation/index.html)
 
-### Formats
-All ui elements you can set the format of can contain the following variables
+Afterward download InfoSkull from either the [Releases](https://github.com/notTamion/InfoSkull/releases)
+or [Thunderstore](https://thunderstore.io/c/white-knuckle/p/notTamion/InfoSkull/)
+and move the unpacked zip folder into the `BepInEx/plugins` folder
 
-[//]: # (VARIABLES_DESCRIPTIONS_START)
-`{level}`: level name\
-`{level_time}`: level time\
-`{height}`: player height\
-`{best_level_time}`: Best level time\
-`{ascent_rate}`: ascent rate\
-`{game_time}`: time in seconds since start of run\
-`{clock}`: clock displaying the time\
-`{left_stamina}`: stamina of your left Hand. LEADERBOARD ILLEGAL\
-`{right_stamina}`: stamina of your right Hand. LEADERBOARD ILLEGAL\
-`{mass_height}`: mass height. LEADERBOARD ILLEGAL\
-`{mass_speed}`: mass speed. LEADERBOARD ILLEGAL\
-`{mass_acc_mult}`: mass acceleration multiplier\
-`{mass_distance}`: distance from mass to player. LEADERBOARD ILLEGAL\
-`{score}`: score \
-`{high_score}`: high score\
-`{ascent}`: highest height reached in this run\
-`{velocity}`: your velocity\
-`{health}`: your health. LEADERBOARD ILLEGAL\
-`{extra_jumps}`: extra jumps you have remaining. LEADERBOARD ILLEGAL
+Now your file structure should look something like this
+```
+WhiteKnuckle
+├── BepInEx
+│   ├── plugins
+│   │   ├── notTamion-InfoSkull-x.x.x (folder)
+```
 
-[//]: # (VARIABLES_DESCRIPTIONS_END)
+## General Usage
+InfoSkull can be configured by entering the in-game pause menu and
+pressing the `Adjust UI` button.
 
-Example format: `{left_stamina} | {clock} | {right_stamina}`
+From here you can drag and drop UI elements to your liking.
 
-Some of these might not work in specific game modes
+To add e.g. add new elements or remove existing ones, hit the `alt` key
+and navigate through the menu options.
+
+## Built-ins
+InfoSkull comes with a few built-in UI elements that can be used.
+
+### Vanilla Elements
+InfoSkull allows you to move around and optionally disable vanilla UI elements.
+
+### TextDisplay
+A simple text display that can be customized to show any text you want.
+
+#### Placeholders
+| Format              | Description                          | Leaderboard Legal |
+|---------------------|--------------------------------------|-------------------|
+| `{level}`           | Current level name                   | ✅                 |
+| `{level_time}`      | Time spent in current level          | ✅                 |
+| `{height}`          | Player vertical height               | ✅                 |
+| `{best_level_time}` | Best time achieved for current level | ✅                 |
+| `{ascent_rate}`     | Player ascent rate                   | ✅                 |
+| `{game_time}`       | Total game time                      | ✅                 |
+| `{clock}`           | System clock time                    | ✅                 |
+| `{left_stamina}`    | Left hand stamina                    | ❌                 |
+| `{right_stamina}`   | Right hand stamina                   | ❌                 |
+| `{mass_height}`     | Mass floor height                    | ❌                 |
+| `{mass_speed}`      | Mass floor speed                     | ❌                 |
+| `{mass_acc_mult}`   | Mass speed increase multiplier       | ✅                 |
+| `{mass_distance}`   | Player distance to mass              | ❌                 |
+| `{score}`           | Your current run score               | ✅                 |
+| `{high_score}`      | Previous run high score              | ✅                 |
+| `{ascent}`          | Total ascent climbed                 | ✅                 |
+| `{velocity}`        | Player velocity                      | ✅                 |
+| `{health}`          | Player Health                        | ❌                 |
+| `{extra_jumps}`     | Extra jumps remaining                | ❌                 |
+| `{empty}`           | Empty output placeholder             | ✅                 |
+
+To stylize the text display, you can use 
+[TMPro rich text tags](https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html).
+
+## API 
+Other mods can create custom InfoSkull UI elements by implementing them
+in their own mod and registering them with InfoSkull. Exact documentation for
+this is still pending, but you can look at the source code of the built-ins to get
+a rough idea.
+
+## Contributing
+If you want to contribute to InfoSkull, feel free to open an issue or a pull request
+(please contact me via discord or an issue before starting work on larger changes).
+
+## Help
+If you need help with InfoSkull, you can contact me on Discord. My handle is `tamion`.

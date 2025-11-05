@@ -1,0 +1,50 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bins SSH KEY
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.BINS_REPO_KEY }}
+      - name: Checkout Bins
+        run: |
+          git clone git@github.com:nottamion/white-knuckle-bins.git libs
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      - name: Build and Package
+        run: |
+          dotnet build -c Release
+          mkdir rel 
+          mv ./bin/Release/net471/InfoSkull.dll ./rel
+      - name: Publish to Thunderstore
+        run: |
+          sed -i '1s/^\xEF\xBB\xBF//' README.md
+          dotnet tool install -g tcli
+          tcli publish \
+            --token "${{ secrets.THUNDERSTORE_TOKEN }}"
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep -E '^versionNumber *= *"' thunderstore.toml | sed 's/versionNumber *= *"\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Create GitHub Release (main only)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.version.outputs.version }}"
+          name: "v${{ steps.version.outputs.version }}"
+          generate_release_notes: true
+          files: ./build/*
+          make_latest: true
