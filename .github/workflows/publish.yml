@@ -40,6 +40,7 @@ jobs:
           fi 
       - name: Publish to Thunderstore
         run: |
+          sed -i '1s/^\xEF\xBB\xBF//' README.md
           dotnet tool install -g tcli
           tcli publish \
             --token "${{ steps.tstore-env.outputs.token }}" \
