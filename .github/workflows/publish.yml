@@ -26,7 +26,8 @@ jobs:
       - name: Build and Package
         run: |
           dotnet build -c Release
-          mkdir dist mv ./bin/Release/net471/InfoSkull.dll ./dist
+          mkdir rel 
+          mv ./bin/Release/net471/InfoSkull.dll ./rel
       - name: Determine Thunderstore Environment
         id: tstore-env
         run: |
