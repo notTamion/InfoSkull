@@ -73,6 +73,6 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="xcopy /Y /D &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\BepInEx\plugins&quot;" />
+        <Exec Command="if $(ConfigurationName) == Debug xcopy /Y /D &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\White Knuckle\BepInEx\plugins&quot;" />
     </Target>
 </Project>
