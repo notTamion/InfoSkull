@@ -40,6 +40,7 @@ jobs:
           fi 
       - name: Publish to Thunderstore
         run: |
+          dotnet tool install -g tcli
           tcli publish \
             --token "${{ steps.tstore-env.outputs.token }}" \
             --repository "${{ steps.tstore-env.outputs.repo }}"
