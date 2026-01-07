@@ -84,7 +84,7 @@ public class RadialMenu : MonoBehaviour
 				InfoSkull.selectProfile(Config.instance.profiles.Count - 1);
 				menu.hideMenu();
 			}));
-			subButtons.Add(new MenuButton("Delete Current", m =>
+			subButtons.Add(new MenuButton("Delete", m =>
 			{
 				if (Config.instance.profiles.Count <= 1) return;
 				Config.instance.profiles.RemoveAt(Config.instance.selectedProfile);

@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "notTamion"
 name = "InfoSkull"
-versionNumber = "2.0.0"
+versionNumber = "2.1.0"
 description = "White Knuckle mod that aims to make UI more customizable"
 websiteUrl = "https://github.com/notTamion/InfoSkull"
 containsNsfwContent = false
