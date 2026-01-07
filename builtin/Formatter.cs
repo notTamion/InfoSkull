@@ -2,13 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Windows.Media.Control;
 using HarmonyLib;
+using InfoSkull.builtin;
 using UnityEngine;
+using System.Linq;
+
 
 namespace InfoSkull;
 
-public class Formatter {
-	
+public class Formatter
+{
+
 	public const string LEVEL = "{level}";
 	public const string LEVEL_TIME = "{level_time}";
 	public const string HEIGHT = "{height}";
@@ -22,19 +27,25 @@ public class Formatter {
 	public const string MASS_SPEED = "{mass_speed}";
 	public const string MASS_ACC_MULT = "{mass_acc_mult}";
 	public const string MASS_DISTANCE = "{mass_distance}";
+	public const string FACE_DISTANCE = "{face_distance}";
+	public const string FACE_AGGRESSION = "{face_aggression}";
 	public const string SCORE = "{score}";
 	public const string HIGH_SCORE = "{high_score}";
 	public const string ASCENT = "{ascent}";
 	public const string VELOCITY = "{velocity}";
 	public const string HEALTH = "{health}";
 	public const string EXTRA_JUMPS = "{extra_jumps}";
+	public const string REAL_TIME = "{real_time}";
+	public const string CLIMB_SPEED = "{climb_speed}";
+	public const string CLIMB_DISTANCE = "{climb_distance}";
+	public const string BEST_CLIMB_DISTANCE = "{best_climb_distance}";
 	public const string EMPTY = "{empty}";
 
 	public static Dictionary<string, Func<string>> replacements = new Dictionary<string, Func<string>> {
 		{ LEVEL, () => WorldLoader.instance.GetCurrentLevel().level.levelName },
 		{ LEVEL_TIME, () => Math.Round(Timer.currentLevelTime(), 2).ToString() },
 		{ HEIGHT, () => Math.Round(ENT_Player.playerObject.transform.position.y, 0).ToString() },
-		{ BEST_LEVEL_TIME, () => 
+		{ BEST_LEVEL_TIME, () =>
 			Math.Round(Timer.bestLevelTime(WorldLoader.instance.GetCurrentLevel().level), 2).ToString()
 		},
 		{ ASCENT_RATE, () => Math.Round(CL_GameManager.gMan.GetPlayerAscentRate(), 2).ToString() },
@@ -47,15 +58,15 @@ public class Formatter {
 		{ CLOCK, () => DateTime.Now.ToString("HH:mm") },
 		{ LEFT_STAMINA, () => Math.Round(ENT_Player.playerObject.hands[0].gripStrength, 0).ToString() },
 		{ RIGHT_STAMINA, () => Math.Round(ENT_Player.playerObject.hands[1].gripStrength, 0).ToString() },
-		{ MASS_HEIGHT, () => Math.Round(DEN_DeathFloor.instance.transform.position.y, 0).ToString() }, {
-			MASS_SPEED, () => {
+		{ MASS_HEIGHT, () => Math.Round(DEN_DeathFloor.instance.transform.position.y, 0).ToString() },
+		{ MASS_SPEED, () => {
 				var deathFloor = DEN_DeathFloor.instance;
 				var traverse = Traverse.Create(deathFloor);
 
 				var num2 = CL_GameManager.gamemode ? CL_GameManager.gamemode.gooSpeedMult : 1f;
 				if (SettingsManager.settings.g_hard) num2 *= 2f;
 				var num3 = traverse.Field("speedMult").GetValue<float>() * num2 *
-				           traverse.Field("speedMultFrame").GetValue<float>();
+					   traverse.Field("speedMultFrame").GetValue<float>();
 				if (WorldLoader.initialized && WorldLoader.isLoaded && WorldLoader.instance.GetCurrentLevel() != null) {
 					num3 *= WorldLoader.instance.GetCurrentLevel().level.massSpeedMult;
 					if (WorldLoader.instance.GetCurrentLevel().level.subRegion != null)
@@ -66,21 +77,32 @@ public class Formatter {
 				return Math.Round(speed, 2).ToString();
 			}
 		},
-		{ MASS_ACC_MULT, () => Math.Round(CL_GameManager.gamemode.gooSpeedIncreaseMult).ToString() }, {
-			MASS_DISTANCE,
+		{ MASS_ACC_MULT, () => Math.Round(CL_GameManager.gamemode.gooSpeedIncreaseMult).ToString() },
+		{ MASS_DISTANCE,
 			() => Math.Round(
 					ENT_Player.playerObject.transform.position.y - DEN_DeathFloor.instance.transform.position.y, 0)
 				.ToString()
 		},
+		{ FACE_DISTANCE, () => Math.Round(Traverse.Create(DEN_Face.faceInstances.OrderBy((face) => Traverse.Create(face).Field("headDistance").GetValue<float>()).First()).Field("headDistance").GetValue<float>(), 0).ToString() },
+		{ FACE_AGGRESSION, () => Math.Round(DEN_Face.faceInstances.OrderBy((face) => face.aggression).First().aggression, 2).ToString() },
 		{ SCORE, () => Math.Round(CL_GameManager.gMan.GetPlayerAscent() * CL_GameManager.gMan.GetPlayerAscentRate(), 0).ToString() },
 		{ HIGH_SCORE, () => Math.Round(Traverse.Create(CL_GameManager.gMan).Field("previousHighScore").GetValue<float>(), 0).ToString() },
 		{ ASCENT, () => Math.Round(Traverse.Create(CL_GameManager.gMan).Field("playerAscent").GetValue<float>(), 0).ToString() },
 		{ VELOCITY, () => Math.Round(Traverse.Create(ENT_Player.playerObject).Field("lastVel").GetValue<Vector3>().magnitude, 2).ToString() },
 		{ HEALTH, () => Math.Round(ENT_Player.playerObject.health, 1).ToString() },
 		{ EXTRA_JUMPS, () => Traverse.Create(ENT_Player.playerObject).Field("extraJumpsRemaining").GetValue<int>().ToString() },
+		{ CLIMB_SPEED, () => Math.Round(CL_GameManager.gMan.GetPlayerTravelSpeed(), 2).ToString() },
+		{ CLIMB_DISTANCE, () => Math.Round(CL_GameManager.GetPlayerTravelDistance(), 2).ToString() },
+		{ BEST_CLIMB_DISTANCE, () => Math.Round(CL_GameManager.gMan.GetPlayerBestTravelDistance(), 2).ToString() },
+		{ REAL_TIME, () => {
+			TimeSpan realTimeTemp = TimeSpan.FromSeconds(Timer.realTime);
+			return realTimeTemp.TotalHours >= 1.0
+			? realTimeTemp.ToString("hh\\:mm\\:ss\\:ff")
+			: realTimeTemp.ToString("mm\\:ss\\:ff");
+		} },
 		{ EMPTY, () => "" }
 	};
-	
+
 	public static List<string> LEADERBOARD_ILLEGAL = [
 		LEFT_STAMINA,
 		RIGHT_STAMINA,
@@ -88,21 +110,30 @@ public class Formatter {
 		MASS_HEIGHT,
 		MASS_SPEED,
 		HEALTH,
-		EXTRA_JUMPS
+		EXTRA_JUMPS,
+		FACE_AGGRESSION,
+		FACE_DISTANCE,
 	];
-	
-	public static string format(string format, Dictionary<string, string> overrides = null) { 
-		if (overrides != null) {
+
+	public static string format(string format, Dictionary<string, string> overrides = null)
+	{
+		if (overrides != null)
+		{
 			foreach (var change in overrides)
 				format = format.Replace(change.Key, change.Value);
 		}
 
-		return Regex.Replace(format.Replace("\\n", "\n"), "{[^}]+}", match => {
-			try {
-				if (replacements.TryGetValue(match.Value, out var func)) {
+		return Regex.Replace(format.Replace("\\n", "\n"), "{[^}]+}", match =>
+		{
+			try
+			{
+				if (replacements.TryGetValue(match.Value, out var func))
+				{
 					return func();
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 #if DEBUG
 				InfoSkullPlugin.logger.LogError(e);
 #endif
@@ -110,5 +141,5 @@ public class Formatter {
 			}
 			return match.Value;
 		});
-	} 
+	}
 }

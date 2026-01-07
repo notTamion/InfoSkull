@@ -58,7 +58,10 @@ A simple text display that can be customized to show any text you want.
 | `{level_time}`      | Time spent in current level          | ✅                 |
 | `{height}`          | Player vertical height               | ✅                 |
 | `{best_level_time}` | Best time achieved for current level | ✅                 |
-| `{ascent_rate}`     | Player ascent rate                   | ✅                 |
+| `{climb_speed}`     | Player climb speed                   | ✅                 |
+| `{climb_distance}`  | Player climb distance                | ✅                 |
+| `{best_climb_distance}`  | Best Player climb distance      | ✅                 |
+| `{ascent_rate}`     | Player ascent rate (old)             | ✅                 |
 | `{game_time}`       | Total game time                      | ✅                 |
 | `{clock}`           | System clock time                    | ✅                 |
 | `{left_stamina}`    | Left hand stamina                    | ❌                 |
@@ -67,9 +70,11 @@ A simple text display that can be customized to show any text you want.
 | `{mass_speed}`      | Mass floor speed                     | ❌                 |
 | `{mass_acc_mult}`   | Mass speed increase multiplier       | ✅                 |
 | `{mass_distance}`   | Player distance to mass              | ❌                 |
+| `{face_distance}`   | Player distance to face              | ❌                 |
+| `{face_aggression}` | Face aggression level                | ❌                 |
 | `{score}`           | Your current run score               | ✅                 |
 | `{high_score}`      | Previous run high score              | ✅                 |
-| `{ascent}`          | Total ascent climbed                 | ✅                 |
+| `{ascent}`          | Total height climbed (old)           | ✅                 |
 | `{velocity}`        | Player velocity                      | ✅                 |
 | `{health}`          | Player Health                        | ❌                 |
 | `{extra_jumps}`     | Extra jumps remaining                | ❌                 |
@@ -86,7 +91,7 @@ a rough idea.
 
 ## Contributing
 If you want to contribute to InfoSkull, feel free to open an issue or a pull request
-(please contact me via discord or an issue before starting work on larger changes).
+(please contact me via discord or open an issue before starting work on larger changes).
 
 ## Help
-If you need help with InfoSkull, you can contact me on Discord. My handle is `tamion`.
+If you need help with InfoSkull, you can contact me on Discord. My [at] is `tamion`.

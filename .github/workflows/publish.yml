@@ -40,7 +40,7 @@ jobs:
         run: |
           VERSION=$(grep -E '^versionNumber *= *"' thunderstore.toml | sed 's/versionNumber *= *"\(.*\)"/\1/')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      - name: Create GitHub Release (main only)
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ steps.version.outputs.version }}"
