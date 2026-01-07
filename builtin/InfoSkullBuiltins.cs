@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace InfoSkull.builtin;
 
-public class InfoSkullBuiltins {
+public class InfoSkullBuiltins
+{
 
 	internal static readonly List<string> BASE_GAME_POS = [
 		"High Score",
@@ -13,25 +14,30 @@ public class InfoSkullBuiltins {
 		"Tip Header",
 		"Header Text",
 	];
-	
+
 	static GameObject textDisplayPrefab;
-	
-	public static void init() {
-		core.InfoSkull.onInitElements += () => {
-			if (!textDisplayPrefab) {
+
+	public static void init()
+	{
+		core.InfoSkull.onInitElements += () =>
+		{
+			if (!textDisplayPrefab)
+			{
 				var highScore = GameObject.Find("High Score");
 				textDisplayPrefab = GameObject.Instantiate(highScore);
 				textDisplayPrefab.name = "TextDisplay Prefab";
 				GameObject.DontDestroyOnLoad(textDisplayPrefab);
 			}
 		};
-		
+
 		ElementType.create("text_display")
-			.objectCreator(config => {
+			.objectCreator(config =>
+			{
 				var display = GameObject.Instantiate(textDisplayPrefab, GameObject.Find("Game UI").transform);
 				display.name = "TextDisplay";
 				return display;
-			}).onInstantiate(controller => {
+			}).onInstantiate(controller =>
+			{
 				controller.gameObject.GetComponent<BaseGameHandler>();
 				var format = controller.gameObject.AddComponent<FormatHandler>();
 				controller.registerHandler(format);
@@ -40,11 +46,13 @@ public class InfoSkullBuiltins {
 				var textDisplayHandler = controller.gameObject.AddComponent<TextDisplayHandler>();
 				controller.registerHandler(textDisplayHandler);
 			}).register();
-		
+
 		ElementType.create("base_game_text")
-			.objectCreator(config => {
+			.objectCreator(config =>
+			{
 				return GameObject.Find(config.data["elementName"] as string);
-			}).onInstantiate(controller => {
+			}).onInstantiate(controller =>
+			{
 				controller.menuSettings().allowDeletion = false;
 				var baseGamehandler = controller.gameObject.AddComponent<BaseGameHandler>();
 				controller.registerHandler(baseGamehandler);

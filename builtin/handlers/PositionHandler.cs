@@ -8,10 +8,12 @@ using UnityEngine.EventSystems;
 
 namespace InfoSkull.builtin.handlers;
 
-public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+{
 	ElementController controller;
-	
-	public override void init(ElementController controller) {
+
+	public override void init(ElementController controller)
+	{
 		canvas = GetComponentInParent<Canvas>();
 		canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
 
@@ -20,31 +22,35 @@ public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, 
 
 		rectTransform = GetComponent<RectTransform>();
 		inputField = GetComponent<TMP_InputField>();
-		
-		if (controller.config().data.ContainsKey("position")) {
+
+		if (controller.config().data.ContainsKey("position"))
+		{
 			var pos = ConfigVector2.fromDict(controller.config().data["position"]);
 			pos.x *= Screen.width;
 			pos.y *= Screen.height;
 			controller.gameObject.transform.position = pos;
 		}
-		else {
+		else
+		{
 			var pos = controller.gameObject.transform.position;
 			controller.config().data["position"] = new ConfigVector2(pos.x / Screen.width, pos.y / Screen.height);
 		}
 		this.controller = controller;
-		
-		
+
+
 	}
 
-	public override void openAdjustUI() {
-		
+	public override void openAdjustUI()
+	{
+
 	}
 
-	public override void closeAdjustUI() {
+	public override void closeAdjustUI()
+	{
 		var pos = controller.gameObject.transform.position;
 		controller.config().data["position"] = new ConfigVector2(pos.x / Screen.width, pos.y / Screen.height);
 	}
-	
+
 	readonly float snapThreshold = 20f;
 	Canvas canvas;
 	CanvasGroup canvasGroup;
@@ -53,7 +59,8 @@ public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, 
 	Vector2 pointerOffset;
 	RectTransform rectTransform;
 
-	public void OnBeginDrag(PointerEventData eventData) {
+	public void OnBeginDrag(PointerEventData eventData)
+	{
 		if (inputField) inputField.enabled = false;
 		canvasGroup.blocksRaycasts = false;
 
@@ -68,17 +75,20 @@ public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, 
 		pointerOffset = localPointerPosInParent - rectTransform.anchoredPosition;
 	}
 
-	public void OnDrag(PointerEventData eventData) {
+	public void OnDrag(PointerEventData eventData)
+	{
 		if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
 			    rectTransform.parent as RectTransform,
 			    eventData.position,
 			    eventData.pressEventCamera,
-			    out var localPointerPosInParent)) {
+			    out var localPointerPosInParent))
+		{
 			var newAnchoredPos = localPointerPosInParent - pointerOffset;
 
 			var snappingEnabled = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-			if (snappingEnabled) {
+			if (snappingEnabled)
+			{
 				if (Mathf.Abs(newAnchoredPos.x) <= snapThreshold) newAnchoredPos.x = 0;
 				if (Mathf.Abs(newAnchoredPos.y) <= snapThreshold) newAnchoredPos.y = 0;
 			}
@@ -87,8 +97,10 @@ public class PositionHandler : ElementHandler, IBeginDragHandler, IDragHandler, 
 		}
 	}
 
-	public void OnEndDrag(PointerEventData eventData) {
-		if (inputField) {
+	public void OnEndDrag(PointerEventData eventData)
+	{
+		if (inputField)
+		{
 			inputField.enabled = true;
 			inputField.ActivateInputField();
 			Traverse.Create(inputField).Field("caretRectTrans").GetValue<RectTransform>().anchoredPosition =
