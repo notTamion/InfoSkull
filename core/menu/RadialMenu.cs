@@ -8,14 +8,15 @@ using InfoSkull.core.menu;
 using Newtonsoft.Json;
 using TMPro;
 
-namespace InfoSkull.core.components;
 
-extern alias unityengineold;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
+using InfoSkull.core.components;
+using InfoSkull.builtin;
+namespace InfoSkull.core.menu;
 
 public class RadialMenu : MonoBehaviour
 {
@@ -161,6 +162,11 @@ public class RadialMenu : MonoBehaviour
 
 	void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Escape) && InfoSkull.isAdjustingUI)
+		{
+			CL_GameManager.gMan.UnPause();
+		}
+
 		if (Input.GetKeyDown(KeyCode.LeftAlt) && InfoSkull.isAdjustingUI)
 		{
 			createMenu();
@@ -224,7 +230,7 @@ public class RadialMenu : MonoBehaviour
 			contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 			contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 			TextMeshProUGUI text = textGO.AddComponent<TextMeshProUGUI>();
-			text.text = buttons[i].label;
+			text.text = buttons[i].shortLabel();
 			text.color = Color.white;
 			text.alignment = TextAlignmentOptions.Center;
 			text.fontSize = 24;
@@ -240,10 +246,18 @@ public class RadialMenu : MonoBehaviour
 			EventTrigger trigger = buttonGO.AddComponent<EventTrigger>();
 
 			EventTrigger.Entry enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-			enter.callback.AddListener(_ => text.alpha = 0.5f);
+			enter.callback.AddListener(_ =>
+			{
+				text.text = buttons[t].label;
+				text.alpha = 0.5f;
+			});
 
 			EventTrigger.Entry exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-			exit.callback.AddListener(_ => text.alpha = 1f);
+			exit.callback.AddListener(_ =>
+			{
+				text.text = buttons[t].shortLabel();
+				text.alpha = 1f;
+			});
 
 			trigger.triggers.Add(enter);
 			trigger.triggers.Add(exit);

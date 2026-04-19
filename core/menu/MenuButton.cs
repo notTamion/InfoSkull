@@ -18,4 +18,9 @@ public class MenuButton
 	{
 		return new MenuButton(label, onClick);
 	}
+
+	public string shortLabel()
+	{
+		return label.Substring(0, Math.Min(label.Length, 3)) + "...";
+	}
 }

@@ -1,4 +1,5 @@
 using HarmonyLib;
+using InfoSkull.builtin;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,12 +18,20 @@ public class GameManagerPatchBuiltin
 		Timer.levelEnterTime = __instance.GetGameTime();
 	}
 
+	[HarmonyPatch("Win")]
+	[HarmonyPostfix]
+	public static void postfixWin()
+	{
+		InfoSkullBuiltins.Statics.hasFinished = true;
+	}
+
 	[HarmonyPatch("Start")]
 	[HarmonyPostfix]
 	public static void postfixStart(CL_GameManager __instance)
 	{
 		Timer.levelEnterTime = __instance.GetGameTime();
 		Timer.realTime = 0;
+		InfoSkullBuiltins.Statics.hasFinished = false;
 	}
 
 	[HarmonyPatch("Update")]

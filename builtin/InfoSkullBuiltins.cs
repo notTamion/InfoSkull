@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using InfoSkull.builtin.handlers;
 using InfoSkull.core;
@@ -61,5 +62,12 @@ public class InfoSkullBuiltins
 
 			}).allowCreationByMenu(false)
 			.register();
+	}
+
+	public static class Statics
+	{
+		public static bool hasFinished = false;
+		public static Queue<int> recentTravelSpeedQueue = new Queue<int>();
+		public static float recentTravelSpeed = 0.0F;
 	}
 }

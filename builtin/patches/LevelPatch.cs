@@ -9,7 +9,7 @@ public class LevelPatch
 	[HarmonyPostfix]
 	public static void prefixOnExit(M_Level __instance)
 	{
-		var new_level = WorldLoader.GetClosestLevelToPosition(ENT_Player.playerObject.transform.position).level;
+		var new_level = WorldLoader.GetClosestLevelToPosition(ENT_Player.playerObject.transform.position).GetLevel();
 		if (new_level.HasEntered()) return;
 
 		Timer.completeRoom(__instance);

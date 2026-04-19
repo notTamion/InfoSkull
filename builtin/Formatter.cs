@@ -2,14 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Windows.Media.Control;
 using HarmonyLib;
-using InfoSkull.builtin;
 using UnityEngine;
 using System.Linq;
 
 
-namespace InfoSkull;
+namespace InfoSkull.builtin;
 
 public class Formatter
 {
@@ -37,16 +35,17 @@ public class Formatter
 	public const string EXTRA_JUMPS = "{extra_jumps}";
 	public const string REAL_TIME = "{real_time}";
 	public const string CLIMB_SPEED = "{climb_speed}";
+	public const string RECENT_CLIMB_SPEED = "{recent_climb_speed}";
 	public const string CLIMB_DISTANCE = "{climb_distance}";
 	public const string BEST_CLIMB_DISTANCE = "{best_climb_distance}";
 	public const string EMPTY = "{empty}";
 
 	public static Dictionary<string, Func<string>> replacements = new Dictionary<string, Func<string>> {
-		{ LEVEL, () => WorldLoader.instance.GetCurrentLevel().level.levelName },
+		{ LEVEL, () => WorldLoader.instance.GetCurrentLevel().GetLevel().levelName },
 		{ LEVEL_TIME, () => Math.Round(Timer.currentLevelTime(), 2).ToString() },
 		{ HEIGHT, () => Math.Round(ENT_Player.playerObject.transform.position.y, 0).ToString() },
 		{ BEST_LEVEL_TIME, () =>
-			Math.Round(Timer.bestLevelTime(WorldLoader.instance.GetCurrentLevel().level), 2).ToString()
+			Math.Round(Timer.bestLevelTime(WorldLoader.instance.GetCurrentLevel().GetLevel()), 2).ToString()
 		},
 		{ ASCENT_RATE, () => Math.Round(CL_GameManager.gMan.GetPlayerAscentRate(), 2).ToString() },
 		{ GAME_TIME, () => {
@@ -68,9 +67,9 @@ public class Formatter
 				var num3 = traverse.Field("speedMult").GetValue<float>() * num2 *
 					   traverse.Field("speedMultFrame").GetValue<float>();
 				if (WorldLoader.initialized && WorldLoader.isLoaded && WorldLoader.instance.GetCurrentLevel() != null) {
-					num3 *= WorldLoader.instance.GetCurrentLevel().level.massSpeedMult;
-					if (WorldLoader.instance.GetCurrentLevel().level.subRegion != null)
-						num3 *= WorldLoader.instance.GetCurrentLevel().level.subRegion.massSpeedMult;
+					num3 *= WorldLoader.instance.GetCurrentLevel().GetLevel().massSpeedMult;
+					if (WorldLoader.instance.GetCurrentLevel().GetLevel().subRegion != null)
+						num3 *= WorldLoader.instance.GetCurrentLevel().GetLevel().subRegion.massSpeedMult;
 				}
 
 				var speed = deathFloor.speed * num3;
@@ -85,13 +84,14 @@ public class Formatter
 		},
 		{ FACE_DISTANCE, () => Math.Round(Traverse.Create(DEN_Face.faceInstances.OrderBy((face) => Traverse.Create(face).Field("headDistance").GetValue<float>()).First()).Field("headDistance").GetValue<float>(), 0).ToString() },
 		{ FACE_AGGRESSION, () => Math.Round(DEN_Face.faceInstances.OrderBy((face) => face.aggression).First().aggression, 2).ToString() },
-		{ SCORE, () => Math.Round(CL_GameManager.gMan.GetPlayerAscent() * CL_GameManager.gMan.GetPlayerAscentRate(), 0).ToString() },
+		{ SCORE, () => Math.Round(CL_GameManager.gamemode.GetPlayerScore(InfoSkullBuiltins.Statics.hasFinished), 0).ToString() },
 		{ HIGH_SCORE, () => Math.Round(Traverse.Create(CL_GameManager.gMan).Field("previousHighScore").GetValue<float>(), 0).ToString() },
 		{ ASCENT, () => Math.Round(Traverse.Create(CL_GameManager.gMan).Field("playerAscent").GetValue<float>(), 0).ToString() },
 		{ VELOCITY, () => Math.Round(Traverse.Create(ENT_Player.playerObject).Field("lastVel").GetValue<Vector3>().magnitude, 2).ToString() },
 		{ HEALTH, () => Math.Round(ENT_Player.playerObject.health, 1).ToString() },
 		{ EXTRA_JUMPS, () => Traverse.Create(ENT_Player.playerObject).Field("extraJumpsRemaining").GetValue<int>().ToString() },
 		{ CLIMB_SPEED, () => Math.Round(CL_GameManager.gMan.GetPlayerTravelSpeed(), 2).ToString() },
+		//{ RECENT_CLIMB_SPEED, () => InfoSkullBuiltins.Statics.recentTravelSpeed.ToString() },
 		{ CLIMB_DISTANCE, () => Math.Round(CL_GameManager.GetPlayerTravelDistance(), 2).ToString() },
 		{ BEST_CLIMB_DISTANCE, () => Math.Round(CL_GameManager.gMan.GetPlayerBestTravelDistance(), 2).ToString() },
 		{ REAL_TIME, () => {
