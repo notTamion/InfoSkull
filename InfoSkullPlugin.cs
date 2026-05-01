@@ -9,7 +9,7 @@ public class InfoSkullPlugin : BaseUnityPlugin
 {
 	const string GUID = "de.tamion.infoskull";
 	const string NAME = "InfoSkull";
-	public const string VERSION = "2.1.1";
+	public const string VERSION = "2.1.2";
 
 	public static InfoSkullPlugin instance;
 

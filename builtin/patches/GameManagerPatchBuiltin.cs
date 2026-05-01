@@ -23,6 +23,7 @@ public class GameManagerPatchBuiltin
 	public static void postfixWin()
 	{
 		InfoSkullBuiltins.Statics.hasFinished = true;
+		Timer.completeRoom(WorldLoader.instance.GetCurrentLevel().GetLevel());
 	}
 
 	[HarmonyPatch("Start")]
@@ -39,7 +40,7 @@ public class GameManagerPatchBuiltin
 	public static void postfixUpdate(CL_GameManager __instance)
 	{
 		if (highScoreQueue != null && !Traverse.Create(__instance).Field("loading").GetValue<bool>() &&
-		    __instance.uiMan)
+				__instance.uiMan)
 		{
 			__instance.uiMan.highscoreHeader.ShowText(highScoreQueue);
 			highScoreQueue = null;

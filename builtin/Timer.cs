@@ -27,7 +27,16 @@ public class Timer
 	public static float bestLevelTime(M_Level level)
 	{
 		var statName = "info-skull-" + level.levelName + "-best-time";
-		var stat = StatManager.saveData.gameStats.GetStatistic(statName);
-		return stat.value == "" ? 0.0f : float.Parse(stat.value);
+		var stat = StatManager.sessionStats.GetStatistic(statName).value;
+		var saveStat = StatManager.saveData.gameStats.GetStatistic(statName).value;
+		if (stat == "")
+		{
+			return saveStat == "" ? 0.0f : float.Parse(saveStat);
+		}
+		if (saveStat == "")
+		{
+			return float.Parse(stat);
+		}
+		return float.Parse(stat) > float.Parse(saveStat) ? float.Parse(saveStat) : float.Parse(stat);
 	}
 }
